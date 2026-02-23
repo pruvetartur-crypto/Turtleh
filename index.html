@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image → Loadstring</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="canvas" width="32" height="32"></canvas>
+
+<div class="wrap">
+
+  <div class="badge"><span class="dot"></span> Starving Artist Art Generator</div>
+
+  <div class="hero">
+    <h1>Image → <span>Loadstring</span></h1>
+    <p>Paste an image URL, get a ready-to-use Lua script.</p>
+    <button class="disc-btn">
+      <svg width="16" height="13" viewBox="0 0 18 14" fill="currentColor">
+        <path d="M15.25 1.2A14.9 14.9 0 0011.5.07a.06.06 0 00-.06.03c-.16.28-.33.65-.45.94a13.8 13.8 0 00-4 0A9.3 9.3 0 006.56.1a.06.06 0 00-.06-.03A14.9 14.9 0 002.75 1.2a.06.06 0 00-.03.02C.4 4.6-.24 7.88.07 11.12a.06.06 0 00.02.04 14.96 14.96 0 004.48 2.27.06.06 0 00.07-.02c.35-.47.66-.97.93-1.5a.06.06 0 00-.03-.08 9.8 9.8 0 01-1.42-.68.06.06 0 010-.1c.1-.07.19-.15.29-.22a.06.06 0 01.06 0c2.97 1.36 6.19 1.36 9.12 0a.06.06 0 01.06 0c.1.08.2.15.3.22a.06.06 0 010 .1c-.45.27-.93.5-1.42.68a.06.06 0 00-.04.08c.28.53.59 1.03.93 1.5a.06.06 0 00.07.02 14.9 14.9 0 004.48-2.27.06.06 0 00.03-.04c.37-3.77-.62-7.04-2.66-9.9a.05.05 0 00-.02-.02z"/>
+      </svg>
+      Join our Discord
+    </button>
+  </div>
+
+  <!-- CONFIG CARD -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-ico">⚙️</span>
+      <span class="card-title">Configuration</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('url', this)">Image URL</button>
+      <button class="tab" onclick="switchTab('file', this)">Upload File</button>
+    </div>
+
+    <div id="urlTab" class="field">
+      <label>Image URL</label>
+      <input type="url" id="imageUrl" placeholder="https://example.com/image.png">
+    </div>
+
+    <div id="fileTab" class="field" style="display:none">
+      <label>Image File</label>
+      <div class="upload" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this)">
+        <span class="upload-icon">🖼️</span>
+        <div class="upload-text"><b>Click to browse</b> or drag & drop</div>
+        <div class="file-info" id="fileInfo">
+          <img class="file-thumb" id="fileThumb" src="" alt="">
+          <div>
+            <div class="file-name" id="fileName"></div>
+            <div class="file-sz" id="fileSize"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()">Generate</button>
+  </div>
+
+  <!-- QUANTIZE TOGGLE (outside card) -->
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <span class="toggle-title">Color quantization</span>
+      <span class="toggle-desc" id="toggleDesc">On — colors snapped to nearest step</span>
+    </div>
+    <button class="toggle on" id="quantToggle" onclick="toggleQuant()" aria-pressed="true">
+      <span class="toggle-thumb"></span>
+    </button>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card" id="resultCard">
+    <div class="card-head">
+      <span class="card-ico">✅</span>
+      <span class="card-title">Result</span>
+    </div>
+
+    <div class="preview-row">
+      <!-- Original image -->
+      <div class="preview-block">
+        <span class="preview-label">Original</span>
+        <img id="originalImg" src="" alt="original">
+      </div>
+      <!-- Arrow -->
+      <span class="preview-arrow">→</span>
+      <!-- 32x32 canvas -->
+      <div class="preview-block">
+        <span class="preview-label" id="previewSizeLabel">32 × 32</span>
+        <canvas id="previewCanvas" width="32" height="32"></canvas>
+      </div>
+    </div>
+
+    <div class="prev-meta">Pixels: <b id="pixelCount">0</b></div>
+
+    <div class="out-head">
+      <span class="out-label">Lua Script</span>
+      <button class="copy-btn" onclick="copyOut()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="9" y="9" width="13" height="13" rx="2"/>
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>
+        Copy
+      </button>
+    </div>
+    <textarea id="outputBox" readonly></textarea>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
