@@ -71,7 +71,6 @@ function generate() {
 }
 
 function processImage(img, originalSrc, btn) {
-  // Step-down resize to 32x32
   let tmp = document.createElement('canvas');
   tmp.width = img.width; tmp.height = img.height;
   tmp.getContext('2d').drawImage(img, 0, 0);
@@ -101,15 +100,13 @@ function processImage(img, originalSrc, btn) {
   for (let i = 0; i < d.length; i += 4) {
     let r = d[i], g = d[i+1], b = d[i+2];
     if (quantEnabled) {
-      // Snap to nearest multiple of 32 → ~8 shades per channel
-      r = Math.min(255, Math.round(r / 32) * 32);
-      g = Math.min(255, Math.round(g / 32) * 32);
-      b = Math.min(255, Math.round(b / 32) * 32);
+      r = Math.min(255, Math.floor(r / 16) * 16);
+      g = Math.min(255, Math.floor(g / 16) * 16);
+      b = Math.min(255, Math.floor(b / 16) * 16);
     }
     pixels.push([r, g, b]);
   }
 
-  // Draw preview canvas
   const pc = document.getElementById('previewCanvas');
   pc.width = 32; pc.height = 32;
   const pctx = pc.getContext('2d');
